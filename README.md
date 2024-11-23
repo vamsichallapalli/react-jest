@@ -505,3 +505,35 @@ test('renders app with image and heading', () => {
 2. Matches them using `moduleNameMapper` in `jest.config.js`.
 3. Replaces the imports with mocks (`styleMock.js` for CSS, `fileMock.js` for images).
 4. Tests continue without errors, focusing on the component's behavior.
+
+
+### Difference Between Running Jest Tests on Node and jsdom
+
+When you run Jest tests in your React project, the test environment matters because it dictates how your tests interact with things like the DOM (Document Object Model).
+
+- **Node Environment:**
+  - When Jest runs tests in a **Node** environment, it's simulating tests purely in a Node.js runtime. This means there's no real browser or DOM available. This environment is typically used for testing backend-related functionality or pure JavaScript logic.
+  - **Example**: If you test a utility function that doesn't interact with the UI, you can use Node.
+  - **Limitations**: You can’t test anything that requires interaction with the DOM, like React components or browser-specific APIs (e.g., `window`, `document`, `localStorage`).
+
+- **jsdom Environment:**
+  - When Jest runs tests in a **jsdom** environment, it simulates a browser-like environment using JavaScript. It allows you to test your React components, as it mimics the DOM and browser APIs, like `document`, `window`, etc.
+  - **Example**: When testing React components that render HTML, simulate clicks, or change the state of the DOM, you'll use the jsdom environment.
+  - **Limitations**: While jsdom mimics the browser, it's not a fully-featured browser, so some browser-specific functionality (like certain APIs) may not work as expected.
+
+### **Why You Need jsdom for React Testing**
+For React applications, since you're typically testing UI components that interact with the DOM, you need jsdom. This is because jsdom provides a simulated browser environment for testing the rendering of components, handling events, and DOM manipulation, just like a real browser would.
+
+### **Important Note for Jest Version Above 28**
+- If you're using **Jest version 28 or above**, you'll need to **install the jsdom environment package** manually. This is because Jest no longer includes jsdom by default, starting from version 28.
+  
+  To install jsdom, run:
+  ```bash
+  npm i jest-environment-jsdom --save-dev
+  ```
+
+### Simple Example:
+- **Node**: Running tests in Node is like testing backend code where there's no need for a "window" or "document" (i.e., no UI to interact with).
+- **jsdom**: Running tests in jsdom simulates a browser so that you can interact with your UI components as if they were being rendered in an actual browser.
+
+In summary, use **Node** for backend logic testing and **jsdom** for testing React components or any frontend code that requires interaction with the DOM.
